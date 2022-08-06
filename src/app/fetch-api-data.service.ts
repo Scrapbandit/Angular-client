@@ -9,7 +9,7 @@ import { Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 //Declaring the api url that will provide data for the client app
-const apiUrl = 'https://agile-dusk-10644.herokuapp.com/'; 
+const apiUrl = 'https://agile-dusk-10644.herokuapp.com/';
 
 @Injectable({
   providedIn: 'root',
