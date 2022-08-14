@@ -109,10 +109,11 @@ export class FetchApiDataService {
           Authorization: 'Bearer ' + token,
         }),
       })
-      .pipe(map(this.extractResponseData), catchError(this.handleError));
+      .pipe(map(this.extractResponseData), 
+      catchError(this.handleError));
   }
 
-  addFavoriteMovies(movieID: string): Observable<any> {
+  addFavoriteMovie(movieID: string): Observable<any> {
     // Get Authorization token stored in local storage
     const token = localStorage.getItem('token');
     // Get Username stored in local storage
@@ -123,10 +124,11 @@ export class FetchApiDataService {
           Authorization: 'Bearer ' + token,
         }),
       })
-      .pipe(map(this.extractResponseData), catchError(this.handleError));
+      .pipe(map(this.extractResponseData), 
+      catchError(this.handleError));
   }
 
-  removeFavoriteMovies(movieID: any): Observable<any> {
+  removeFavoriteMovie(movieID: any): Observable<any> {
     // Get Authorization token stored in local storage
     const token = localStorage.getItem('token');
     // Get Username stored in local storage
