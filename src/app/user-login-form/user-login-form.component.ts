@@ -28,7 +28,9 @@ constructor(
 ) { }
 ngOnInit(): void {
 }
-
+/**
+   * sends form inputs for user login to backend via fetchApiData Service
+   */
 // This is the function responsible for sending the form inputs to the backend
 loginUser(): void {
     this.fetchApiData.userLogin(this.userData).subscribe((result) => {
@@ -41,6 +43,7 @@ loginUser(): void {
      this.snackBar.open(result, 'OK', {
         duration: 2000
      });
+     // Redirect to movies (main) page
      this.router.navigate(['movies']);
     
   }, (result) => {
