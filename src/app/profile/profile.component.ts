@@ -1,25 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { FetchApiDataService } from '../fetch-api-data.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EditProfileComponent } from '../edit-profile/edit-profile.component';
 import { Router } from '@angular/router';
 
-
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss']
+  styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit {
   user: any = {};
+  movies: any[] = [];
+  @Output() favMovies: any[] = [];
+  
 
   constructor(
     public fetchApiData: FetchApiDataService,
     public dialog: MatDialog,
     public router: Router,
     public snackBar: MatSnackBar
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.getUser();
@@ -33,9 +35,18 @@ export class ProfileComponent implements OnInit {
   getUser(): void {
     this.fetchApiData.getUser().subscribe((resp: any) => {
       this.user = resp;
-      console.log(this.user);
-      return this.user;
-    })
+      if (this.user) {
+        this.fetchApiData.getAllMovies().subscribe((resp: any) => {
+          this.movies = resp;
+          this.movies.filter((m: any) => {
+            if (this.user.FavoriteMovies.includes(m._id)) {
+              this.favMovies.push(m);
+            }
+          });
+        });
+        console.log(this.favMovies);
+      }
+    });
   }
 
   /**
@@ -43,8 +54,22 @@ export class ProfileComponent implements OnInit {
    */
   openEditProfileDialog(): void {
     this.dialog.open(EditProfileComponent, {
-      width: '300px'
-    })
+      width: '300px',
+    });
+  }
+
+  /**
+   * removes a movie from the list of favorite movies via an API call
+   * @param id
+   * @function removeFavoriteMovie
+   */
+  removeFromFavoriteMovies(id: string): void {
+    console.log(id);
+    this.fetchApiData.removeFavoriteMovie(id).subscribe((result) => {
+      console.log(result);
+      this.ngOnInit();
+      // window.location.reload();
+    });
   }
 
   /**
@@ -55,10 +80,14 @@ export class ProfileComponent implements OnInit {
   deleteProfile(): void {
     if (confirm('Are you sure you want to delete your account?')) {
       this.router.navigate(['welcome']).then(() => {
-        this.snackBar.open('You have successfully deleted your account!', 'OK', {
-          duration: 2000
-        });
-      })
+        this.snackBar.open(
+          'You have successfully deleted your account!',
+          'OK',
+          {
+            duration: 2000,
+          }
+        );
+      });
       this.fetchApiData.deleteUser().subscribe((result) => {
         console.log(result);
         localStorage.clear();
